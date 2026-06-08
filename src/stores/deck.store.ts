@@ -113,7 +113,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
     }
 
     // 2. Validate subscription limits
-    const canRunRes = await subscriptionService.canRunReview();
+    const canRunRes = await subscriptionService.canRunReview(startupContext.startupName);
     if (!canRunRes.success || !canRunRes.data) {
       set({
         error: "You have exceeded your plan's review limits. Please upgrade your subscription.",
@@ -190,7 +190,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
       await deckReviewService.saveReview(completedReview);
 
       // 7. Increment subscription usage
-      await subscriptionService.incrementReviewUsage();
+      await subscriptionService.incrementReviewUsage(startupContext.startupName);
 
       set((state) => ({
         reviews: [completedReview, ...state.reviews],

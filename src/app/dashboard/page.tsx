@@ -119,8 +119,18 @@ export default function OverviewPage() {
           </div>
           <div>
             <span className="text-xs text-muted block font-mono uppercase tracking-wider leading-none">Plan Limits</span>
-            <span className="text-2xl font-bold text-navy mt-1 block font-mono">
-              {subscription ? `${subscription.reviewsUsed} / ${subscription.reviewsLimit}` : "—"}
+            <span className="text-[13px] font-bold text-navy mt-1.5 block font-mono leading-tight">
+              {subscription ? (
+                subscription.reviewsLimit === -1 ? (
+                  "Unlimited"
+                ) : (
+                  <>
+                    Decks: {subscription.reviewsUsed}/{subscription.reviewsLimit}
+                    <br />
+                    Revisions: {subscription.revisionsUsed}/{subscription.revisionsLimit}
+                  </>
+                )
+              ) : "—"}
             </span>
           </div>
         </div>

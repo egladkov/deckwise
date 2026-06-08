@@ -11,7 +11,7 @@ import Link from "next/link";
 
 export default function NewReviewPage() {
   const router = useRouter();
-  const { runAnalysis, analysisStatus, error, loading } = useDeckStore();
+  const { runAnalysis, analysisStatus, error, loading, reviews, fetchReviews } = useDeckStore();
   const { fetchSubscription, subscription } = useSubscriptionStore();
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -26,7 +26,8 @@ export default function NewReviewPage() {
 
   useEffect(() => {
     fetchSubscription();
-  }, [fetchSubscription]);
+    fetchReviews();
+  }, [fetchSubscription, fetchReviews]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -46,6 +47,29 @@ export default function NewReviewPage() {
       router.push(`/dashboard/reviews/${review.id}`);
     }
   };
+
+  const isRevision = reviews.some(
+    (r) =>
+      r.startupContext?.startupName?.toLowerCase().trim() ===
+      formData.startupName.toLowerCase().trim()
+  );
+
+  let limitReached = false;
+  let limitMessage = "";
+
+  if (subscription && formData.startupName.trim()) {
+    if (isRevision) {
+      if (subscription.revisionsLimit !== -1 && subscription.revisionsUsed >= subscription.revisionsLimit) {
+        limitReached = true;
+        limitMessage = `Revisions limit reached (${subscription.revisionsUsed}/${subscription.revisionsLimit}) for "${formData.startupName.trim()}". Please upgrade your subscription.`;
+      }
+    } else {
+      if (subscription.reviewsLimit !== -1 && subscription.reviewsUsed >= subscription.reviewsLimit) {
+        limitReached = true;
+        limitMessage = `Plan decks limit reached (${subscription.reviewsUsed}/${subscription.reviewsLimit}). Please upgrade your subscription or upload a revision of an existing deck.`;
+      }
+    }
+  }
 
   const stages = [
     "Idea",
@@ -244,9 +268,9 @@ export default function NewReviewPage() {
               </p>
             )}
 
-            {subscription && subscription.reviewsUsed >= subscription.reviewsLimit && (
+            {subscription && limitReached && (
               <p className="mt-4 text-xs font-medium text-burgundy bg-burgundy/5 px-3 py-1.5 rounded-lg border border-burgundy/20 animate-fade-up">
-                Plan reviews limit reached ({subscription.reviewsUsed}/{subscription.reviewsLimit}). Please upgrade your subscription.
+                {limitMessage}
               </p>
             )}
 
@@ -255,7 +279,7 @@ export default function NewReviewPage() {
               disabled={
                 !selectedFile ||
                 loading ||
-                !!(subscription && subscription.reviewsUsed >= subscription.reviewsLimit)
+                limitReached
               }
               className="mt-6 w-full py-4 bg-navy hover:bg-navy-soft disabled:bg-paper-deep text-chalk hover:text-gold disabled:text-muted text-xs font-semibold uppercase tracking-wider rounded-xl border border-line-dark shadow-md transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"
             >

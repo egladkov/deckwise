@@ -74,7 +74,7 @@ export const AccountInfoCard: React.FC = () => {
             <div>
               <span className="text-xs text-muted block leading-none">Access Level</span>
               <span className="text-sm text-navy font-semibold mt-1 block">
-                {subscription?.planId === "investor" ? "Investor (Full Access)" : subscription?.planId === "pro" ? "Professional" : "Basic Access"}
+                {subscription?.planId === "series-a" ? "Series A+ (Full Access)" : subscription?.planId === "seed" ? "Seed Access" : subscription?.planId === "pre-seed" ? "Pre-Seed Access" : "Basic Access"}
               </span>
             </div>
           </div>

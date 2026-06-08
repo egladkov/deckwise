@@ -11,13 +11,15 @@ export const subscriptionService = {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        // Fallback to default free plan if user is not authenticated
+        // Fallback to default bootstrapper plan if user is not authenticated
         const defaultSub: Subscription = {
-          planId: "free",
-          reviewsLimit: PLANS.free.reviewsLimit,
+          planId: "bootstrapper",
+          reviewsLimit: PLANS.bootstrapper.reviewsLimit,
           reviewsUsed: 0,
-          deepAnalysis: PLANS.free.deepAnalysis,
-          chatWithReport: PLANS.free.chatWithReport,
+          revisionsLimit: PLANS.bootstrapper.revisionsLimit,
+          revisionsUsed: 0,
+          deepAnalysis: PLANS.bootstrapper.deepAnalysis,
+          chatWithReport: PLANS.bootstrapper.chatWithReport,
           billingStatus: "active",
           nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
         };
@@ -41,11 +43,13 @@ export const subscriptionService = {
       if (!subRow) {
         // If not found, create and insert
         const defaultSub: Subscription = {
-          planId: "free",
-          reviewsLimit: PLANS.free.reviewsLimit,
+          planId: "bootstrapper",
+          reviewsLimit: PLANS.bootstrapper.reviewsLimit,
           reviewsUsed: 0,
-          deepAnalysis: PLANS.free.deepAnalysis,
-          chatWithReport: PLANS.free.chatWithReport,
+          revisionsLimit: PLANS.bootstrapper.revisionsLimit,
+          revisionsUsed: 0,
+          deepAnalysis: PLANS.bootstrapper.deepAnalysis,
+          chatWithReport: PLANS.bootstrapper.chatWithReport,
           billingStatus: "active",
           nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
         };
@@ -54,10 +58,12 @@ export const subscriptionService = {
           .from("subscriptions")
           .insert({
             user_id: user.id,
-            plan_id: "free",
+            plan_id: "bootstrapper",
             status: "active",
             reviews_used: 0,
-            reviews_limit: PLANS.free.reviewsLimit,
+            reviews_limit: PLANS.bootstrapper.reviewsLimit,
+            revisions_used: 0,
+            revisions_limit: PLANS.bootstrapper.revisionsLimit,
             current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
           })
           .select()
@@ -117,6 +123,8 @@ export const subscriptionService = {
           plan_id: planId,
           reviews_limit: targetPlan.reviewsLimit,
           reviews_used: 0,
+          revisions_limit: targetPlan.revisionsLimit,
+          revisions_used: 0,
           status: "active",
           current_period_start: new Date().toISOString(),
           current_period_end: nextBillingDate.toISOString(),
@@ -184,7 +192,7 @@ export const subscriptionService = {
     }
   },
 
-  async canRunReview(): Promise<ServiceResult<boolean>> {
+  async canRunReview(startupName?: string): Promise<ServiceResult<boolean>> {
     try {
       const subResult = await this.getCurrentSubscription();
       if (!subResult.success) {
@@ -192,14 +200,40 @@ export const subscriptionService = {
       }
 
       const sub = subResult.data;
-      const canRun = sub.reviewsUsed < sub.reviewsLimit;
-      return { success: true, data: canRun };
+
+      // If unlimited reviews, always allowed
+      if (sub.reviewsLimit === -1) {
+        return { success: true, data: true };
+      }
+
+      // Check if it's a revision or a new deck
+      let isRevision = false;
+      if (startupName) {
+        const supabase = createClient();
+        const { count, error } = await supabase
+          .from("deck_reviews")
+          .select("*", { count: "exact", head: true })
+          .eq("startup_name", startupName.trim());
+
+        if (!error && count && count > 0) {
+          isRevision = true;
+        }
+      }
+
+      if (isRevision) {
+        if (sub.revisionsLimit === -1) {
+          return { success: true, data: true };
+        }
+        return { success: true, data: sub.revisionsUsed < sub.revisionsLimit };
+      } else {
+        return { success: true, data: sub.reviewsUsed < sub.reviewsLimit };
+      }
     } catch {
       return { success: true, data: false };
     }
   },
 
-  async incrementReviewUsage(): Promise<ServiceResult<void>> {
+  async incrementReviewUsage(startupName?: string): Promise<ServiceResult<void>> {
     try {
       const supabase = createClient();
       const {
@@ -221,13 +255,35 @@ export const subscriptionService = {
         };
       }
 
-      const newUsage = subResult.data.reviewsUsed + 1;
+      const sub = subResult.data;
+
+      // Check if it is a revision or a new deck
+      let isRevision = false;
+      if (startupName) {
+        const { count, error } = await supabase
+          .from("deck_reviews")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id)
+          .eq("startup_name", startupName.trim());
+
+        // Note: inside runAnalysis, the draft review is ALREADY created in the DB,
+        // so count > 1 means it's a revision.
+        if (!error && count && count > 1) {
+          isRevision = true;
+        }
+      }
+
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      const updateData: any = {};
+      if (isRevision) {
+        updateData.revisions_used = sub.revisionsUsed + 1;
+      } else {
+        updateData.reviews_used = sub.reviewsUsed + 1;
+      }
 
       const { error } = await supabase
         .from("subscriptions")
-        .update({
-          reviews_used: newUsage,
-        })
+        .update(updateData)
         .eq("user_id", user.id);
 
       if (error) {
@@ -250,11 +306,13 @@ export const subscriptionService = {
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 function mapSubscriptionRow(row: any): Subscription {
-  const plan = PLANS[row.plan_id as PlanId] || PLANS.free;
+  const plan = PLANS[row.plan_id as PlanId] || PLANS.bootstrapper;
   return {
     planId: row.plan_id as PlanId,
     reviewsLimit: row.reviews_limit,
     reviewsUsed: row.reviews_used,
+    revisionsLimit: row.revisions_limit ?? plan.revisionsLimit,
+    revisionsUsed: row.revisions_used ?? 0,
     deepAnalysis: plan.deepAnalysis,
     chatWithReport: plan.chatWithReport,
     portfolioMode: plan.portfolioMode,

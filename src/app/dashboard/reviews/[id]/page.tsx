@@ -105,7 +105,7 @@ export default function ReviewDetailsPage() {
     );
   }
 
-  const isChatDisabled = subscription?.planId === "free";
+  const isChatDisabled = !subscription?.chatWithReport;
 
   return (
     <div className="space-y-6 font-sans">

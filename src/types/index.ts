@@ -1,4 +1,4 @@
-export type PlanId = "free" | "pro" | "investor";
+export type PlanId = "bootstrapper" | "pre-seed" | "seed" | "series-a";
 
 export type ReviewStatus =
   | "draft"
@@ -30,6 +30,8 @@ export interface Subscription {
   planId: PlanId;
   reviewsLimit: number;
   reviewsUsed: number;
+  revisionsLimit: number;
+  revisionsUsed: number;
   deepAnalysis: boolean;
   chatWithReport: boolean;
   portfolioMode?: boolean;
@@ -41,8 +43,10 @@ export interface Subscription {
 export interface Plan {
   id: PlanId;
   name: string;
+  description: string;
   priceMonth: number;
   reviewsLimit: number;
+  revisionsLimit: number;
   deepAnalysis: boolean;
   chatWithReport: boolean;
   portfolioMode?: boolean;

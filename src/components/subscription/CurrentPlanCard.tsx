@@ -72,7 +72,7 @@ export const CurrentPlanCard: React.FC = () => {
           <div>
             <span className="text-xs text-muted block leading-none">Payment Method</span>
             <span className="text-sm font-semibold text-navy mt-1 block">
-              {subscription.planId === "free" ? "Free" : subscription.paymentMethod || "Visa **** 4242"}
+              {subscription.planId === "bootstrapper" ? "Mock Payment" : subscription.paymentMethod || "Visa **** 4242"}
             </span>
           </div>
         </div>
@@ -83,13 +83,13 @@ export const CurrentPlanCard: React.FC = () => {
         <div className="mb-6 flex gap-3 p-4 bg-burgundy/5 border border-burgundy/15 rounded-xl text-burgundy text-xs leading-relaxed">
           <AlertCircle className="w-5 h-5 shrink-0" />
           <p>
-            Your subscription has been cancelled. After it expires, your account will revert to the Free plan, and your deep analysis reports and chat histories will become unavailable.
+            Your subscription has been cancelled. After it expires, your account will revert to the Bootstrapper plan, and some analysis features and histories may become limited.
           </p>
         </div>
       )}
 
       {/* Action Buttons */}
-      {subscription.planId !== "free" && subscription.billingStatus === "active" && (
+      {subscription.planId !== "bootstrapper" && subscription.billingStatus === "active" && (
         <div className="flex justify-end pt-4 border-t border-line/50">
           <button
             type="button"
