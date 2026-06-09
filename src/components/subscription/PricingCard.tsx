@@ -84,12 +84,12 @@ export const PricingCard: React.FC<PricingCardProps> = ({
       <button
         onClick={() => onSelect(id)}
         disabled={isCurrent || loading}
-        className={`w-full py-3.5 px-4 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-200 hover:-translate-y-0.5 disabled:opacity-50 disabled:transform-none ${
+        className={`w-full px-5 py-3 rounded-md text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50 disabled:transform-none focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/70 focus-visible:ring-offset-2 focus-visible:ring-offset-paper ${
           isCurrent
-            ? "border border-line-dark/20 bg-paper-deep text-muted cursor-default hover:-translate-y-0"
+            ? "border border-line/40 bg-paper-deep text-muted cursor-default hover:-translate-y-0 shadow-sm"
             : isHighlighted
-            ? "bg-navy hover:bg-navy-soft text-chalk hover:text-gold border border-navy-soft shadow-md font-bold"
-            : "bg-paper-warm/60 hover:bg-paper-warm text-navy border border-line-dark/10"
+            ? "bg-navy text-chalk hover:bg-navy-soft shadow-md shadow-navy/15 hover:shadow-lg hover:shadow-navy/25"
+            : "border border-line bg-paper-warm text-navy hover:border-gold hover:bg-paper shadow-sm"
         }`}
       >
         {isCurrent

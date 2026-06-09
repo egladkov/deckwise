@@ -108,7 +108,7 @@ export const UploadDeckCard: React.FC<UploadDeckCardProps> = ({
           </p>
           <button
             type="button"
-            className="px-4 py-2 border border-line bg-paper hover:bg-paper-warm text-navy text-xs font-semibold rounded-xl shadow-sm transition-colors"
+            className="px-4 py-2 border border-line bg-paper-warm text-navy hover:border-gold hover:bg-paper rounded-md text-xs font-semibold transition-all duration-300 shadow-sm"
           >
             Select File
           </button>
@@ -120,9 +120,9 @@ export const UploadDeckCard: React.FC<UploadDeckCardProps> = ({
           )}
         </div>
       ) : (
-        <div className="border border-line rounded-2xl p-5 bg-paper-warm/40 flex items-center justify-between gap-4 animate-fade-up">
+        <div className="border border-line rounded-xl p-5 bg-paper-warm/40 flex items-center justify-between gap-4 animate-fade-up">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-navy/10 text-navy flex items-center justify-center border border-navy/10 shrink-0">
+            <div className="w-12 h-12 rounded-md bg-navy/10 text-navy flex items-center justify-center border border-navy/10 shrink-0">
               <FileText className="w-6 h-6 text-gold" />
             </div>
             <div className="space-y-0.5">
@@ -138,7 +138,7 @@ export const UploadDeckCard: React.FC<UploadDeckCardProps> = ({
           <button
             type="button"
             onClick={removeFile}
-            className="p-2 rounded-xl border border-line bg-paper hover:bg-burgundy/10 text-muted hover:text-burgundy transition-all"
+            className="p-2 rounded-md border border-line bg-paper hover:bg-burgundy/10 text-muted hover:text-burgundy transition-all duration-300"
             title="Remove file"
           >
             <X className="w-4 h-4" />

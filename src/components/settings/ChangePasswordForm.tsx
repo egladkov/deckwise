@@ -59,7 +59,7 @@ export const ChangePasswordForm: React.FC = () => {
               value={formData.current}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-line rounded-xl bg-paper text-navy placeholder:text-muted/50 focus:border-gold focus:outline-none text-sm transition-colors"
+              className="w-full px-3 py-2 border border-line rounded-md bg-paper text-navy placeholder:text-muted/50 focus:border-gold focus:outline-none text-sm transition-colors"
             />
           </div>
 
@@ -74,7 +74,7 @@ export const ChangePasswordForm: React.FC = () => {
               value={formData.new}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-line rounded-xl bg-paper text-navy placeholder:text-muted/50 focus:border-gold focus:outline-none text-sm transition-colors"
+              className="w-full px-3 py-2 border border-line rounded-md bg-paper text-navy placeholder:text-muted/50 focus:border-gold focus:outline-none text-sm transition-colors"
             />
           </div>
 
@@ -89,7 +89,7 @@ export const ChangePasswordForm: React.FC = () => {
               value={formData.confirm}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-line rounded-xl bg-paper text-navy placeholder:text-muted/50 focus:border-gold focus:outline-none text-sm transition-colors"
+              className="w-full px-3 py-2 border border-line rounded-md bg-paper text-navy placeholder:text-muted/50 focus:border-gold focus:outline-none text-sm transition-colors"
             />
           </div>
         </div>
@@ -110,7 +110,7 @@ export const ChangePasswordForm: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="px-5 py-2.5 bg-navy hover:bg-navy-soft text-chalk text-xs font-semibold rounded-xl border border-line-dark shadow-md transition-all hover:-translate-y-0.5 disabled:opacity-50"
+            className="px-5 py-2.5 bg-navy text-chalk hover:bg-navy-soft hover:-translate-y-0.5 shadow-md shadow-navy/15 hover:shadow-lg hover:shadow-navy/25 rounded-md text-sm font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/70 disabled:opacity-50 disabled:transform-none"
           >
             {loading ? "Updating..." : "Update Password"}
           </button>

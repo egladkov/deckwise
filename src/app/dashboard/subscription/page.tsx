@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSubscriptionStore } from "../../../stores/subscription.store";
 import { CurrentPlanCard } from "../../../components/subscription/CurrentPlanCard";
 import { PricingCard } from "../../../components/subscription/PricingCard";
+import { PaymentModal } from "../../../components/subscription/PaymentModal";
 import { CreditCard, ShieldCheck } from "lucide-react";
-import { PlanId } from "../../../types";
+import { PlanId, Plan } from "../../../types";
 
 export default function SubscriptionPage() {
   const {
@@ -17,15 +18,29 @@ export default function SubscriptionPage() {
     loading,
   } = useSubscriptionStore();
 
+  const [selectedPlanForPayment, setSelectedPlanForPayment] = useState<Plan | null>(null);
+
   useEffect(() => {
     fetchSubscription();
     fetchPlans();
   }, [fetchSubscription, fetchPlans]);
 
-  const handlePlanSelect = async (planId: PlanId) => {
-    if (confirm("Do you want to switch to this plan? (This is a mock operation, no actual payment will be processed)")) {
-      await changePlan(planId);
+  const handlePlanSelect = (planId: PlanId) => {
+    const targetPlan = plans.find((p) => p.id === planId);
+    if (targetPlan) {
+      setSelectedPlanForPayment(targetPlan);
     }
+  };
+
+  const handlePaymentConfirm = async () => {
+    if (selectedPlanForPayment) {
+      await changePlan(selectedPlanForPayment.id);
+      setSelectedPlanForPayment(null);
+    }
+  };
+
+  const handlePaymentCancel = () => {
+    setSelectedPlanForPayment(null);
   };
 
   return (
@@ -64,6 +79,14 @@ export default function SubscriptionPage() {
           </div>
         </div>
       </div>
+
+      <PaymentModal
+        isOpen={selectedPlanForPayment !== null}
+        plan={selectedPlanForPayment}
+        onConfirm={handlePaymentConfirm}
+        onCancel={handlePaymentCancel}
+      />
     </div>
   );
 }
+

@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { useAuthStore } from "../../stores/auth.store";
 import { useRouter } from "next/navigation";
-import { FormSection } from "../shared/FormSection";
 import { ConfirmDialog } from "../shared/ConfirmDialog";
 import { AlertCircle } from "lucide-react";
 
@@ -20,37 +19,34 @@ export const DeleteAccountDialog: React.FC = () => {
     setIsOpen(false);
     const success = await deleteAccount();
     if (success) {
-      router.push("/login");
+      router.push("/");
     }
   };
 
   return (
-    <div className="w-full max-w-2xl font-sans">
-      <FormSection
-        title="Danger Zone"
-        description="Actions in this section cannot be undone. Please proceed with caution."
-      >
-        <div className="p-4 bg-burgundy/5 border border-burgundy/15 rounded-2xl flex gap-3 text-xs leading-relaxed text-burgundy mb-4">
-          <AlertCircle className="w-5 h-5 shrink-0" />
-          <div>
-            <h4 className="font-semibold mb-0.5">Delete Account</h4>
-            <p>
-              This action will permanently delete your user profile, history of all pitch deck reviews, saved chat messages, and subscription. All local files and reports in IndexedDB will be completely erased and cannot be recovered.
-            </p>
-          </div>
+    <div className="w-full max-w-2xl font-sans border border-burgundy/20 rounded-2xl bg-burgundy/5 p-6 sm:p-8 animate-fade-up">
+      <div className="mb-6 flex gap-3.5 items-start">
+        <AlertCircle className="w-6 h-6 text-burgundy shrink-0 mt-1" />
+        <div>
+          <h3 className="text-xl sm:text-2xl font-display font-bold text-burgundy mb-2">
+            Delete Account
+          </h3>
+          <p className="text-sm text-burgundy/80 leading-relaxed font-sans">
+            This action will permanently delete your user profile, history of all pitch deck reviews, saved chat messages, and subscription. All local files and reports in IndexedDB will be completely erased and cannot be recovered.
+          </p>
         </div>
+      </div>
 
-        <div className="flex justify-end pt-2">
-          <button
-            type="button"
-            onClick={handleDeleteClick}
-            disabled={loading}
-            className="px-5 py-2.5 bg-burgundy hover:bg-burgundy/90 text-chalk text-xs font-semibold rounded-xl border border-burgundy/40 shadow-sm transition-all hover:-translate-y-0.5 disabled:opacity-50"
-          >
-            {loading ? "Deleting..." : "Delete Account"}
-          </button>
-        </div>
-      </FormSection>
+      <div className="flex justify-end pt-2">
+        <button
+          type="button"
+          onClick={handleDeleteClick}
+          disabled={loading}
+          className="px-5 py-2.5 bg-burgundy hover:bg-burgundy/90 text-chalk rounded-md text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50"
+        >
+          {loading ? "Deleting..." : "Delete Account"}
+        </button>
+      </div>
 
       <ConfirmDialog
         isOpen={isOpen}

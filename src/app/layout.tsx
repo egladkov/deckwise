@@ -23,6 +23,11 @@ export const metadata: Metadata = {
   title: "Deckwise AI — VC-Grade Pitch Deck Review & Analysis",
   description: "Automated VC audit for pitch decks based on venture capital standards. Get detailed feedback, slide-by-slide scores, and investor questions before meeting VCs.",
   keywords: ["pitch deck review", "VC feedback", "startup analysis", "pitch deck score", "TAM audit"],
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+  },
 };
 
 export default function RootLayout({

@@ -31,7 +31,7 @@ export const ProfileForm: React.FC = () => {
         industry: user.profile.industry || "",
         startupStage: user.profile.startupStage || "Idea",
         website: user.profile.website || "",
-        preferredLanguage: user.profile.preferredLanguage || "en",
+        preferredLanguage: "en",
       });
     }
   }, [user]);
@@ -80,7 +80,7 @@ export const ProfileForm: React.FC = () => {
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-line rounded-xl bg-paper text-navy placeholder:text-muted/50 focus:border-gold focus:outline-none text-sm transition-colors"
+              className="w-full px-3 py-2 border border-line rounded-md bg-paper text-navy placeholder:text-muted/50 focus:border-gold focus:outline-none text-sm transition-colors"
             />
           </div>
 
@@ -95,7 +95,7 @@ export const ProfileForm: React.FC = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-line rounded-xl bg-paper text-navy placeholder:text-muted/50 focus:border-gold focus:outline-none text-sm transition-colors"
+              className="w-full px-3 py-2 border border-line rounded-md bg-paper text-navy placeholder:text-muted/50 focus:border-gold focus:outline-none text-sm transition-colors"
             />
           </div>
 
@@ -110,7 +110,7 @@ export const ProfileForm: React.FC = () => {
               value={formData.companyName}
               onChange={handleChange}
               placeholder="e.g. Deckwise AI"
-              className="w-full px-3 py-2 border border-line rounded-xl bg-paper text-navy placeholder:text-muted/50 focus:border-gold focus:outline-none text-sm transition-colors"
+              className="w-full px-3 py-2 border border-line rounded-md bg-paper text-navy placeholder:text-muted/50 focus:border-gold focus:outline-none text-sm transition-colors"
             />
           </div>
 
@@ -125,7 +125,7 @@ export const ProfileForm: React.FC = () => {
               value={formData.industry}
               onChange={handleChange}
               placeholder="e.g. AI SaaS, FinTech"
-              className="w-full px-3 py-2 border border-line rounded-xl bg-paper text-navy placeholder:text-muted/50 focus:border-gold focus:outline-none text-sm transition-colors"
+              className="w-full px-3 py-2 border border-line rounded-md bg-paper text-navy placeholder:text-muted/50 focus:border-gold focus:outline-none text-sm transition-colors"
             />
           </div>
 
@@ -138,7 +138,7 @@ export const ProfileForm: React.FC = () => {
               name="startupStage"
               value={formData.startupStage}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-line rounded-xl bg-paper text-navy focus:border-gold focus:outline-none text-sm transition-colors"
+              className="w-full px-3 py-2 border border-line rounded-md bg-paper text-navy focus:border-gold focus:outline-none text-sm transition-colors"
             >
               {stages.map((st) => (
                 <option key={st} value={st}>
@@ -159,25 +159,10 @@ export const ProfileForm: React.FC = () => {
               value={formData.website}
               onChange={handleChange}
               placeholder="https://example.com"
-              className="w-full px-3 py-2 border border-line rounded-xl bg-paper text-navy placeholder:text-muted/50 focus:border-gold focus:outline-none text-sm transition-colors"
+              className="w-full px-3 py-2 border border-line rounded-md bg-paper text-navy placeholder:text-muted/50 focus:border-gold focus:outline-none text-sm transition-colors"
             />
           </div>
 
-          {/* Preferred Language */}
-          <div>
-            <label className="block text-xs font-semibold text-navy uppercase tracking-wider mb-1.5">
-              AI Report Language
-            </label>
-            <select
-              name="preferredLanguage"
-              value={formData.preferredLanguage}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-line rounded-xl bg-paper text-navy focus:border-gold focus:outline-none text-sm transition-colors"
-            >
-              <option value="en">English</option>
-              <option value="ru">Russian</option>
-            </select>
-          </div>
         </div>
 
         {/* Execution Status */}
@@ -197,7 +182,7 @@ export const ProfileForm: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="px-5 py-2.5 bg-navy hover:bg-navy-soft text-chalk text-xs font-semibold rounded-xl border border-line-dark shadow-md transition-all hover:-translate-y-0.5 disabled:opacity-50"
+            className="px-5 py-2.5 bg-navy text-chalk hover:bg-navy-soft hover:-translate-y-0.5 shadow-md shadow-navy/15 hover:shadow-lg hover:shadow-navy/25 rounded-md text-sm font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/70 disabled:opacity-50 disabled:transform-none"
           >
             {loading ? "Saving..." : "Save Profile"}
           </button>

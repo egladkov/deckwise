@@ -1,24 +1,19 @@
 import React from "react";
 import Link from "next/link";
 import { Sparkles, FileText, CheckCircle2, ShieldAlert, ArrowRight, Zap } from "lucide-react";
+import { Logo } from "../components/shared/Logo";
+import { Footer } from "../components/shared/Footer";
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-ruled bg-paper text-ink font-sans relative overflow-hidden flex flex-col justify-between">
       {/* Top Navigation */}
       <header className="h-20 border-b border-line bg-paper/85 backdrop-blur-md sticky top-0 z-50 flex items-center justify-between px-6 sm:px-12 max-w-7xl w-full mx-auto">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-navy flex items-center justify-center text-gold font-display font-bold text-lg border border-gold/30">
-            D
-          </div>
-          <span className="font-display font-bold text-xl text-navy tracking-tight">
-            Deckwise <span className="text-gold">AI</span>
-          </span>
-        </Link>
-        
+        <Logo href="/" />
+
         <Link
           href="/login"
-          className="px-4 py-2 border border-line hover:border-gold bg-paper hover:bg-paper-warm text-navy text-xs font-semibold uppercase tracking-wider rounded-xl transition-all shadow-sm"
+          className="px-4 py-2 border border-line bg-paper-warm text-navy hover:border-gold hover:bg-paper rounded-md text-xs font-semibold transition-all duration-300 shadow-sm"
         >
           Sign In
         </Link>
@@ -46,16 +41,16 @@ export default function LandingPage() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
           <Link
             href="/register"
-            className="w-full sm:w-auto px-6 py-4 bg-navy hover:bg-navy-soft text-chalk hover:text-gold text-xs font-semibold uppercase tracking-wider rounded-xl border border-line-dark shadow-lg transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-5 py-3 bg-navy text-chalk hover:bg-navy-soft hover:-translate-y-0.5 shadow-md shadow-navy/15 hover:shadow-lg hover:shadow-navy/25 rounded-md text-sm font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/70 focus-visible:ring-offset-2 focus-visible:ring-offset-paper flex items-center justify-center gap-2"
           >
-            <span>Start Free Review</span>
-            <ArrowRight className="w-4 h-4 text-gold" />
+            <span>Analyze my deck</span>
+            <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
             href="/login"
-            className="w-full sm:w-auto px-6 py-4 border border-line bg-paper hover:bg-paper-warm text-navy text-xs font-semibold uppercase tracking-wider rounded-xl shadow-sm transition-all hover:-translate-y-0.5 flex items-center justify-center"
+            className="w-full sm:w-auto px-5 py-3 border border-line bg-paper-warm text-navy hover:border-gold hover:bg-paper hover:-translate-y-0.5 rounded-md text-sm font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/70 focus-visible:ring-offset-2 focus-visible:ring-offset-paper flex items-center justify-center"
           >
-            Demo Login
+            View pricing
           </Link>
         </div>
 
@@ -70,7 +65,7 @@ export default function LandingPage() {
               </span>
               <span className="text-navy font-semibold">Score: 84/100 (Grade B)</span>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left text-xs text-navy/90">
               <div className="border border-sage/20 rounded-xl bg-sage/5 p-4 space-y-2">
                 <h4 className="font-display font-bold text-sm text-navy flex items-center gap-1.5">
@@ -90,15 +85,7 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-line py-8 text-center text-xs text-muted bg-paper-warm/30">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p>© {new Date().getFullYear()} Deckwise AI. All rights reserved. Built for VC-grade pitch deck analysis.</p>
-          <div className="flex gap-4">
-            <a href="#" className="hover:text-navy transition-colors">Terms</a>
-            <a href="#" className="hover:text-navy transition-colors">Privacy</a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

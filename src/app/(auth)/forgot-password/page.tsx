@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Mail, CheckCircle2 } from "lucide-react";
+import { Logo } from "../../../components/shared/Logo";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -26,13 +27,8 @@ export default function ForgotPasswordPage() {
 
         {/* Logo */}
         <div className="flex flex-col items-center mb-6">
-          <div className="w-12 h-12 rounded-xl bg-navy flex items-center justify-center text-gold font-display font-bold text-2xl border border-gold/30 shadow-md mb-2.5">
-            D
-          </div>
-          <h1 className="text-3xl font-display font-bold text-navy tracking-tight text-center">
-            Deckwise <span className="text-gold">AI</span>
-          </h1>
-          <p className="text-xs text-muted font-mono uppercase tracking-wider mt-1 text-center">
+          <Logo href="/" />
+          <p className="text-xs text-muted font-mono uppercase tracking-wider mt-2.5 text-center">
             Recover Access
           </p>
         </div>
@@ -55,7 +51,7 @@ export default function ForgotPasswordPage() {
                   placeholder="founder@startup.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-3.5 py-3 border border-line rounded-xl bg-paper text-navy placeholder:text-muted/40 focus:border-gold focus:outline-none text-sm transition-colors"
+                  className="w-full pl-10 pr-3.5 py-3 border border-line rounded-md bg-paper text-navy placeholder:text-muted/40 focus:border-gold focus:outline-none text-sm transition-colors"
                 />
               </div>
             </div>
@@ -63,7 +59,7 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 bg-navy hover:bg-navy-soft text-chalk text-xs font-semibold uppercase tracking-wider rounded-xl border border-line-dark shadow-md transition-all hover:-translate-y-0.5 disabled:opacity-50"
+              className="w-full px-5 py-3 bg-navy text-chalk hover:bg-navy-soft hover:-translate-y-0.5 shadow-md shadow-navy/15 hover:shadow-lg hover:shadow-navy/25 rounded-md text-sm font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/70 focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:opacity-50 disabled:transform-none"
             >
               {loading ? "Sending..." : "Send Reset Link"}
             </button>
@@ -79,7 +75,7 @@ export default function ForgotPasswordPage() {
             </p>
             <button
               onClick={() => setSubmitted(false)}
-              className="px-4 py-2 border border-line rounded-xl text-xs font-semibold hover:bg-paper-warm transition-colors"
+              className="px-4 py-2 border border-line bg-paper-warm text-navy hover:border-gold hover:bg-paper rounded-md text-xs font-semibold transition-all duration-300"
             >
               Enter different email
             </button>
