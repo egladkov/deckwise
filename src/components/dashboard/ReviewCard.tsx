@@ -28,7 +28,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({ review, onDelete }) => {
   const statusLabels = {
     draft: "Draft",
     uploading: "Uploading...",
-    extracting: "Parsing PDF...",
+    extracting: "Extracting text...",
     analyzing: "AI Analysis...",
     completed: "Ready",
     failed: "Failed",

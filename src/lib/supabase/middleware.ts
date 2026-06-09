@@ -45,6 +45,7 @@ export async function updateSession(request: NextRequest) {
 
   const isDashboardRoute = path.startsWith("/dashboard");
   const isAuthRoute =
+    path === "/" ||
     path === "/login" ||
     path === "/register" ||
     path === "/forgot-password";

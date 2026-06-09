@@ -162,7 +162,7 @@ export default function OverviewPage() {
         ) : reviews.length === 0 ? (
           <EmptyState
             title="Review history is empty"
-            description="Upload your first startup pitch deck in PDF format to run an automated VC audit."
+            description="Upload your first startup pitch deck (PDF, Word, or PowerPoint) to run an automated VC audit."
             icon={Sparkles}
             actionLabel="Start Review"
             onAction={() => router.push("/dashboard/new-review")}

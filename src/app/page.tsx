@@ -1,91 +1,314 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Sparkles, FileText, CheckCircle2, ShieldAlert, ArrowRight, Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "../stores/auth.store";
+import { Mail, Lock, User, Sparkles, ArrowRight } from "lucide-react";
 import { Logo } from "../components/shared/Logo";
-import { Footer } from "../components/shared/Footer";
 
-export default function LandingPage() {
+export default function RootAuthPage() {
+  const router = useRouter();
+  const { 
+    login, 
+    register, 
+    loading, 
+    error, 
+    clearError, 
+    isAuthenticated, 
+    restoreSession 
+  } = useAuthStore();
+
+  const [mode, setMode] = useState<"login" | "register">("login");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  // Restore session on mount to check if user is already logged in
+  useEffect(() => {
+    restoreSession();
+  }, [restoreSession]);
+
+  // Redirect to dashboard if authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/dashboard");
+    }
+  }, [isAuthenticated, router]);
+
+  const handleModeChange = (newMode: "login" | "register") => {
+    setMode(newMode);
+    setValidationError(null);
+    clearError();
+    // Keep email and password to avoid re-typing, but clear confirm password and name
+    setFormData(prev => ({
+      ...prev,
+      name: "",
+      confirmPassword: ""
+    }));
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    clearError();
+    setValidationError(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setValidationError(null);
+    clearError();
+
+    if (mode === "login") {
+      if (!formData.email || !formData.password) {
+        setValidationError("Please fill in all fields.");
+        return;
+      }
+
+      const success = await login({
+        email: formData.email,
+        password: formData.password,
+      });
+      if (success) {
+        router.push("/dashboard");
+      }
+    } else {
+      if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+        setValidationError("Please fill in all fields.");
+        return;
+      }
+
+      if (formData.password.length < 8) {
+        setValidationError("Password must be at least 8 characters.");
+        return;
+      }
+
+      if (formData.password !== formData.confirmPassword) {
+        setValidationError("Passwords do not match.");
+        return;
+      }
+
+      const success = await register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+      if (success) {
+        router.push("/dashboard");
+      }
+    }
+  };
+
+  const activeError = validationError || error;
+
   return (
-    <div className="min-h-screen bg-ruled bg-paper text-ink font-sans relative overflow-hidden flex flex-col justify-between">
-      {/* Top Navigation */}
-      <header className="h-20 border-b border-line bg-paper/85 backdrop-blur-md sticky top-0 z-50 flex items-center justify-between px-6 sm:px-12 max-w-7xl w-full mx-auto">
-        <Logo href="/" />
+    <div className="min-h-screen bg-ruled bg-paper flex items-center justify-center p-4 font-sans relative overflow-hidden">
+      <div className="w-full max-w-md bg-paper border border-line rounded-2xl p-8 shadow-2xl relative overflow-hidden transition-all duration-300">
+        {/* Decorative corner */}
+        <div className="absolute top-0 right-0 w-16 h-16 bg-gold/10 rounded-bl-full border-b border-l border-gold/15" />
 
-        <Link
-          href="/login"
-          className="px-4 py-2 border border-line bg-paper-warm text-navy hover:border-gold hover:bg-paper rounded-md text-xs font-semibold transition-all duration-300 shadow-sm"
-        >
-          Sign In
-        </Link>
-      </header>
-
-      {/* Hero Section */}
-      <main className="flex-1 max-w-5xl w-full mx-auto px-6 sm:px-12 py-16 sm:py-24 text-center space-y-8 animate-fade-up">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-gold/40 bg-gold/5 text-gold font-mono text-[10px] uppercase tracking-wider shadow-[0_0_10px_rgba(201,162,39,0.1)] mx-auto">
-          <Zap className="w-3.5 h-3.5" />
-          <span>Instant VC-Grade Review</span>
-        </div>
-
-        {/* Hero Headline */}
-        <div className="space-y-4 max-w-3xl mx-auto">
-          <h1 className="text-4xl sm:text-6xl font-display font-bold text-navy leading-tight tracking-tight">
-            Review your pitch deck through the eyes of an investor
-          </h1>
-          <p className="text-sm sm:text-base text-muted font-sans max-w-2xl mx-auto leading-relaxed">
-            Deckwise AI performs automated audits of pitch decks based on venture capital standards. Get detailed slide feedback and lists of investor questions before meeting VCs.
+        {/* Logo */}
+        <div className="flex flex-col items-center mb-6">
+          <Logo href="/" />
+          <p className="text-xs text-muted font-mono uppercase tracking-wider mt-2.5 text-center">
+            Pitch Deck Intelligence
           </p>
         </div>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-          <Link
-            href="/register"
-            className="w-full sm:w-auto px-5 py-3 bg-navy text-chalk hover:bg-navy-soft hover:-translate-y-0.5 shadow-md shadow-navy/15 hover:shadow-lg hover:shadow-navy/25 rounded-md text-sm font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/70 focus-visible:ring-offset-2 focus-visible:ring-offset-paper flex items-center justify-center gap-2"
+        {/* Auth Mode Tabs */}
+        <div className="flex border-b border-line mb-6 relative">
+          <button
+            type="button"
+            onClick={() => handleModeChange("login")}
+            className={`flex-1 pb-3 text-xs font-semibold uppercase tracking-wider transition-all duration-300 border-b-2 text-center focus:outline-none ${
+              mode === "login"
+                ? "border-gold text-navy font-bold"
+                : "border-transparent text-muted hover:text-navy"
+            }`}
           >
-            <span>Analyze my deck</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-          <Link
-            href="/login"
-            className="w-full sm:w-auto px-5 py-3 border border-line bg-paper-warm text-navy hover:border-gold hover:bg-paper hover:-translate-y-0.5 rounded-md text-sm font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/70 focus-visible:ring-offset-2 focus-visible:ring-offset-paper flex items-center justify-center"
+            Sign In
+          </button>
+          <button
+            type="button"
+            onClick={() => handleModeChange("register")}
+            className={`flex-1 pb-3 text-xs font-semibold uppercase tracking-wider transition-all duration-300 border-b-2 text-center focus:outline-none ${
+              mode === "register"
+                ? "border-gold text-navy font-bold"
+                : "border-transparent text-muted hover:text-navy"
+            }`}
           >
-            View pricing
-          </Link>
+            Sign Up
+          </button>
         </div>
 
-        {/* Mock Pitch Deck Preview container */}
-        <div className="pt-10 max-w-4xl mx-auto">
-          <div className="border border-line rounded-2xl bg-paper p-4 sm:p-6 shadow-2xl relative overflow-hidden">
-            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
-            <div className="flex justify-between items-center border-b border-line/50 pb-3 mb-4 text-xs font-mono text-muted">
-              <span className="flex items-center gap-1">
-                <FileText className="w-4 h-4 text-gold" />
-                sample_pitch_deck.pdf
-              </span>
-              <span className="text-navy font-semibold">Score: 84/100 (Grade B)</span>
-            </div>
+        {/* Auth Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Full Name field (Register only) */}
+          <div 
+            className={`transition-all duration-300 overflow-hidden ${
+              mode === "register" 
+                ? "max-h-24 opacity-100 mb-4" 
+                : "max-h-0 opacity-0 pointer-events-none mb-0"
+            }`}
+          >
+            {mode === "register" && (
+              <>
+                <label className="block text-xs font-semibold text-navy uppercase tracking-wider mb-1.5">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3.5 top-3.5 h-4.5 w-4.5 text-muted" />
+                  <input
+                    type="text"
+                    name="name"
+                    required={mode === "register"}
+                    placeholder="John Doe"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full pl-10 pr-3.5 py-3 border border-line rounded-md bg-paper text-navy placeholder:text-muted/40 focus:border-gold focus:outline-none text-sm transition-colors"
+                  />
+                </div>
+              </>
+            )}
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left text-xs text-navy/90">
-              <div className="border border-sage/20 rounded-xl bg-sage/5 p-4 space-y-2">
-                <h4 className="font-display font-bold text-sm text-navy flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-sage" /> Strengths
-                </h4>
-                <p>Clearly articulated market problem and elegant demonstration of the technical solution.</p>
-              </div>
-              <div className="border border-burgundy/20 rounded-xl bg-burgundy/5 p-4 space-y-2">
-                <h4 className="font-display font-bold text-sm text-navy flex items-center gap-1.5">
-                  <ShieldAlert className="w-4 h-4 text-burgundy" /> Critical Critiques
-                </h4>
-                <p>Weak details on the GTM strategy and a superficial analysis of direct competitors.</p>
-              </div>
+          {/* Email Address */}
+          <div>
+            <label className="block text-xs font-semibold text-navy uppercase tracking-wider mb-1.5">
+              Email Address
+            </label>
+            <div className="relative">
+              <Mail className="absolute left-3.5 top-3.5 h-4.5 w-4.5 text-muted" />
+              <input
+                type="email"
+                name="email"
+                required
+                placeholder="founder@startup.com"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full pl-10 pr-3.5 py-3 border border-line rounded-md bg-paper text-navy placeholder:text-muted/40 focus:border-gold focus:outline-none text-sm transition-colors"
+              />
             </div>
           </div>
-        </div>
-      </main>
 
-      {/* Footer */}
-      <Footer />
+          {/* Password */}
+          <div>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="block text-xs font-semibold text-navy uppercase tracking-wider">
+                Password
+              </label>
+              {mode === "login" && (
+                <Link
+                  href="/forgot-password"
+                  className="text-xs text-gold hover:text-gold-soft font-semibold transition-colors focus:outline-none"
+                >
+                  Forgot password?
+                </Link>
+              )}
+            </div>
+            <div className="relative">
+              <Lock className="absolute left-3.5 top-3.5 h-4.5 w-4.5 text-muted" />
+              <input
+                type="password"
+                name="password"
+                required
+                placeholder={mode === "register" ? "Minimum 8 characters" : "••••••••"}
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full pl-10 pr-3.5 py-3 border border-line rounded-md bg-paper text-navy placeholder:text-muted/40 focus:border-gold focus:outline-none text-sm transition-colors"
+              />
+            </div>
+          </div>
+
+          {/* Confirm Password (Register only) */}
+          <div 
+            className={`transition-all duration-300 overflow-hidden ${
+              mode === "register" 
+                ? "max-h-24 opacity-100 mb-4" 
+                : "max-h-0 opacity-0 pointer-events-none mb-0"
+            }`}
+          >
+            {mode === "register" && (
+              <>
+                <label className="block text-xs font-semibold text-navy uppercase tracking-wider mb-1.5">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3.5 top-3.5 h-4.5 w-4.5 text-muted" />
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    required={mode === "register"}
+                    placeholder="••••••••"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    className="w-full pl-10 pr-3.5 py-3 border border-line rounded-md bg-paper text-navy placeholder:text-muted/40 focus:border-gold focus:outline-none text-sm transition-colors"
+                  />
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Error Message */}
+          {activeError && (
+            <div className="p-3 bg-burgundy/5 border border-burgundy/15 rounded-xl text-burgundy text-xs animate-fade-up font-medium">
+              {activeError}
+            </div>
+          )}
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full px-5 py-3 bg-navy text-chalk hover:bg-navy-soft hover:-translate-y-0.5 shadow-md shadow-navy/15 hover:shadow-lg hover:shadow-navy/25 rounded-md text-sm font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/70 focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:opacity-50 disabled:transform-none flex items-center justify-center gap-2"
+          >
+            <span>
+              {loading 
+                ? (mode === "login" ? "Signing in..." : "Registering...") 
+                : (mode === "login" ? "Sign In" : "Create Account")
+              }
+            </span>
+            {!loading && <ArrowRight className="w-4 h-4" />}
+          </button>
+        </form>
+
+        {/* Demo Details / Switch Mode Link */}
+        <div className="mt-6 border-t border-line/60 pt-4 text-center">
+          {mode === "login" ? (
+            <>
+              <p className="text-xs text-muted mb-3 font-sans">
+                For a quick demo, use: <span className="font-semibold text-navy">demo@deckwise.ai</span> (any password)
+              </p>
+              <p className="text-xs text-muted">
+                Don't have an account?{" "}
+                <button
+                  type="button"
+                  onClick={() => handleModeChange("register")}
+                  className="text-gold hover:text-gold-soft font-semibold transition-colors focus:outline-none cursor-pointer"
+                >
+                  Sign up
+                </button>
+              </p>
+            </>
+          ) : (
+            <p className="text-xs text-muted">
+              Already have an account?{" "}
+              <button
+                type="button"
+                onClick={() => handleModeChange("login")}
+                className="text-gold hover:text-gold-soft font-semibold transition-colors focus:outline-none cursor-pointer"
+              >
+                Sign In
+              </button>
+            </p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

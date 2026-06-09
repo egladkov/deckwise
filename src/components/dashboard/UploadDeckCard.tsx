@@ -78,7 +78,7 @@ export const UploadDeckCard: React.FC<UploadDeckCardProps> = ({
       <input
         ref={fileInputRef}
         type="file"
-        accept=".pdf"
+        accept=".pdf,.doc,.docx,.ppt,.pptx"
         onChange={handleChange}
         className="hidden"
       />
@@ -104,7 +104,7 @@ export const UploadDeckCard: React.FC<UploadDeckCardProps> = ({
             Upload your presentation
           </h3>
           <p className="text-sm text-muted max-w-sm mb-4 leading-relaxed">
-            Drag and drop your PDF file here, or click to browse. Maximum file size: 10 MB.
+            Drag and drop your PDF, Word, or PowerPoint file here, or click to browse. Maximum file size: 10 MB.
           </p>
           <button
             type="button"

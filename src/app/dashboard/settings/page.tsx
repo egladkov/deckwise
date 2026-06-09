@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { ChangePasswordForm } from "../../../components/settings/ChangePasswordForm";
 import { DeleteAccountDialog } from "../../../components/settings/DeleteAccountDialog";
 import { FormSection } from "../../../components/shared/FormSection";
-import { Settings, Bell, Shield, Database } from "lucide-react";
+import { Settings, Bell, Database } from "lucide-react";
 
 export default function SettingsPage() {
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -16,22 +16,10 @@ export default function SettingsPage() {
     limitWarnings: true,
   });
 
-  // Mock Privacy settings
-  const [privacy, setPrivacy] = useState({
-    shareWithInvestors: false,
-    anonymousAnalytics: true,
-  });
-
   const handleNotificationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     setNotifications((prev) => ({ ...prev, [name]: checked }));
     showToast("Notification settings updated (mock)");
-  };
-
-  const handlePrivacyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setPrivacy((prev) => ({ ...prev, [name]: checked }));
-    showToast("Privacy settings updated (mock)");
   };
 
   const handleClearData = async () => {
@@ -123,29 +111,7 @@ export default function SettingsPage() {
             </div>
           </FormSection>
 
-          {/* Privacy preferences mockup */}
-          <FormSection title="Privacy">
-            <div className="space-y-3.5 pt-2">
-              <div className="flex items-start gap-3">
-                <Shield className="w-4 h-4 text-gold shrink-0 mt-0.5" />
-                <div className="space-y-1">
-                  <label className="flex items-center gap-2 text-xs font-semibold text-navy uppercase tracking-wider cursor-pointer">
-                    <input
-                      type="checkbox"
-                      name="shareWithInvestors"
-                      checked={privacy.shareWithInvestors}
-                      onChange={handlePrivacyChange}
-                      className="accent-navy"
-                    />
-                    Startup Directory
-                  </label>
-                  <span className="text-[10px] text-muted leading-tight block">
-                    Allow accredited investors to find my project if the score is above 80.
-                  </span>
-                </div>
-              </div>
-            </div>
-          </FormSection>
+
 
           {/* Clear local data */}
           <FormSection title="Database Management">

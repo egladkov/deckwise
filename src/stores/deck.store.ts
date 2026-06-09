@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { deckReviewService } from "../services/deck-review.service";
 import { fileService } from "../services/file.service";
-import { pdfService } from "../services/pdf.service";
+import { documentService } from "../services/document.service";
 import { aiReviewService } from "../services/ai-review.service";
 import { aiChatService } from "../services/ai-chat.service";
 import { subscriptionService } from "../services/subscription.service";
@@ -145,7 +145,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
       set({ analysisStatus: "extracting" });
       await deckReviewService.updateReview(draftReview.id, { status: "extracting" });
 
-      const textRes = await pdfService.extractText(file);
+      const textRes = await documentService.extractText(file);
       if (!textRes.success) {
         const errMsg = textRes.error.message;
         await deckReviewService.updateReview(draftReview.id, { status: "failed" });

@@ -128,7 +128,7 @@ export default function ReviewsPage() {
           title={reviews.length === 0 ? "History is empty" : "No results found"}
           description={
             reviews.length === 0
-              ? "Upload a PDF file in the 'New Review' section to have the AI analyze your project."
+              ? "Upload a presentation file (PDF, Word, or PowerPoint) in the 'New Review' section to have the AI analyze your project."
               : "Try changing your filters or sorting options."
           }
           icon={Sparkles}

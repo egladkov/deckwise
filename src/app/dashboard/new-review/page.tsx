@@ -84,7 +84,7 @@ export default function NewReviewPage() {
 
   if (isAnalyzing) {
     const statusMessages = {
-      uploading: "Uploading PDF pitch deck to temporary memory...",
+      uploading: "Uploading presentation file to temporary memory...",
       extracting: "Extracting text layers and slide structures...",
       analyzing: "Running AI audit based on venture capital standards...",
       generating: "Generating detailed report and investor questions...",

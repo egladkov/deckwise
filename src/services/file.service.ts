@@ -10,14 +10,26 @@ export const fileService = {
         };
       }
 
-      // Validate format (PDF only)
-      const isPdf = file.type === "application/pdf" || file.name.endsWith(".pdf");
-      if (!isPdf) {
+      // Validate format (PDF, Word, PowerPoint)
+      const allowedExtensions = [".pdf", ".doc", ".docx", ".ppt", ".pptx"];
+      const allowedMimeTypes = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.ms-powerpoint",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      ];
+
+      const nameLower = file.name.toLowerCase();
+      const hasValidExtension = allowedExtensions.some((ext) => nameLower.endsWith(ext));
+      const hasValidMime = allowedMimeTypes.includes(file.type);
+
+      if (!hasValidExtension && !hasValidMime) {
         return {
           success: false,
           error: {
             code: "UNSUPPORTED_FORMAT",
-            message: "Unsupported format. The Deckwise MVP only supports PDF files.",
+            message: "Unsupported format. The Deckwise MVP supports PDF, Word (.doc, .docx), and PowerPoint (.ppt, .pptx) files.",
           },
         };
       }
@@ -26,7 +38,7 @@ export const fileService = {
       if (file.size === 0) {
         return {
           success: false,
-          error: { code: "EMPTY_FILE", message: "File is empty. Please select a valid PDF." },
+          error: { code: "EMPTY_FILE", message: "File is empty. Please select a valid document." },
         };
       }
 
