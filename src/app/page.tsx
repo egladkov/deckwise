@@ -9,14 +9,14 @@ import { Logo } from "../components/shared/Logo";
 
 export default function RootAuthPage() {
   const router = useRouter();
-  const { 
-    login, 
-    register, 
-    loading, 
-    error, 
-    clearError, 
-    isAuthenticated, 
-    restoreSession 
+  const {
+    login,
+    register,
+    loading,
+    error,
+    clearError,
+    isAuthenticated,
+    restoreSession
   } = useAuthStore();
 
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -125,22 +125,20 @@ export default function RootAuthPage() {
           <button
             type="button"
             onClick={() => handleModeChange("login")}
-            className={`flex-1 pb-3 text-xs font-semibold uppercase tracking-wider transition-all duration-300 border-b-2 text-center focus:outline-none ${
-              mode === "login"
+            className={`flex-1 pb-3 text-xs font-semibold uppercase tracking-wider transition-all duration-300 border-b-2 text-center focus:outline-none ${mode === "login"
                 ? "border-gold text-navy font-bold"
                 : "border-transparent text-muted hover:text-navy"
-            }`}
+              }`}
           >
             Sign In
           </button>
           <button
             type="button"
             onClick={() => handleModeChange("register")}
-            className={`flex-1 pb-3 text-xs font-semibold uppercase tracking-wider transition-all duration-300 border-b-2 text-center focus:outline-none ${
-              mode === "register"
+            className={`flex-1 pb-3 text-xs font-semibold uppercase tracking-wider transition-all duration-300 border-b-2 text-center focus:outline-none ${mode === "register"
                 ? "border-gold text-navy font-bold"
                 : "border-transparent text-muted hover:text-navy"
-            }`}
+              }`}
           >
             Sign Up
           </button>
@@ -149,12 +147,11 @@ export default function RootAuthPage() {
         {/* Auth Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Full Name field (Register only) */}
-          <div 
-            className={`transition-all duration-300 overflow-hidden ${
-              mode === "register" 
-                ? "max-h-24 opacity-100 mb-4" 
+          <div
+            className={`transition-all duration-300 overflow-hidden ${mode === "register"
+                ? "max-h-24 opacity-100 mb-4"
                 : "max-h-0 opacity-0 pointer-events-none mb-0"
-            }`}
+              }`}
           >
             {mode === "register" && (
               <>
@@ -226,12 +223,11 @@ export default function RootAuthPage() {
           </div>
 
           {/* Confirm Password (Register only) */}
-          <div 
-            className={`transition-all duration-300 overflow-hidden ${
-              mode === "register" 
-                ? "max-h-24 opacity-100 mb-4" 
+          <div
+            className={`transition-all duration-300 overflow-hidden ${mode === "register"
+                ? "max-h-24 opacity-100 mb-4"
                 : "max-h-0 opacity-0 pointer-events-none mb-0"
-            }`}
+              }`}
           >
             {mode === "register" && (
               <>
@@ -268,8 +264,8 @@ export default function RootAuthPage() {
             className="w-full px-5 py-3 bg-navy text-chalk hover:bg-navy-soft hover:-translate-y-0.5 shadow-md shadow-navy/15 hover:shadow-lg hover:shadow-navy/25 rounded-md text-sm font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/70 focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:opacity-50 disabled:transform-none flex items-center justify-center gap-2"
           >
             <span>
-              {loading 
-                ? (mode === "login" ? "Signing in..." : "Registering...") 
+              {loading
+                ? (mode === "login" ? "Signing in..." : "Registering...")
                 : (mode === "login" ? "Sign In" : "Create Account")
               }
             </span>
@@ -281,9 +277,6 @@ export default function RootAuthPage() {
         <div className="mt-6 border-t border-line/60 pt-4 text-center">
           {mode === "login" ? (
             <>
-              <p className="text-xs text-muted mb-3 font-sans">
-                For a quick demo, use: <span className="font-semibold text-navy">demo@deckwise.ai</span> (any password)
-              </p>
               <p className="text-xs text-muted">
                 Don't have an account?{" "}
                 <button

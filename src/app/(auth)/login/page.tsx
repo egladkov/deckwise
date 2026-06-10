@@ -113,9 +113,7 @@ export default function LoginPage() {
 
         {/* Demo hints */}
         <div className="mt-6 border-t border-line/60 pt-4 text-center">
-          <p className="text-xs text-muted mb-3 font-sans">
-            For a quick demo, use: <span className="font-semibold text-navy">demo@deckwise.ai</span> (any password)
-          </p>
+
           <p className="text-xs text-muted">
             Don't have an account?{" "}
             <Link
