@@ -1,4 +1,5 @@
-export type PlanId = "bootstrapper" | "pre-seed" | "seed" | "series-a";
+export type PlanId = "free" | "bootstrapper" | "pre-seed" | "seed" | "series-a";
+
 
 export type ReviewStatus =
   | "draft"

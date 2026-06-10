@@ -8,6 +8,7 @@ interface PlanBadgeProps {
 
 export const PlanBadge: React.FC<PlanBadgeProps> = ({ planId, className = "" }) => {
   const styles = {
+    free: "bg-paper-deep text-navy/70 border-line/60",
     bootstrapper: "bg-paper-deep text-navy border-line",
     "pre-seed": "bg-gold/10 text-gold border-gold/40 shadow-[0_0_8px_rgba(201,162,39,0.15)] font-semibold",
     seed: "bg-navy-soft/10 text-navy-soft border-navy-soft/30 font-semibold",
@@ -15,6 +16,7 @@ export const PlanBadge: React.FC<PlanBadgeProps> = ({ planId, className = "" }) 
   };
 
   const labels = {
+    free: "Free",
     bootstrapper: "Bootstrapper",
     "pre-seed": "Pre-Seed Round",
     seed: "Seed Round",
@@ -23,7 +25,7 @@ export const PlanBadge: React.FC<PlanBadgeProps> = ({ planId, className = "" }) 
 
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-mono border uppercase tracking-wider ${styles[planId] || styles.bootstrapper} ${className}`}
+      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-mono border uppercase tracking-wider ${styles[planId] || styles.free} ${className}`}
     >
       {labels[planId] || planId} Plan
     </span>

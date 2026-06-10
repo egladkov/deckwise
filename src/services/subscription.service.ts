@@ -11,15 +11,15 @@ export const subscriptionService = {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        // Fallback to default bootstrapper plan if user is not authenticated
+        // Fallback to default free plan if user is not authenticated
         const defaultSub: Subscription = {
-          planId: "bootstrapper",
-          reviewsLimit: PLANS.bootstrapper.reviewsLimit,
+          planId: "free",
+          reviewsLimit: PLANS.free.reviewsLimit,
           reviewsUsed: 0,
-          revisionsLimit: PLANS.bootstrapper.revisionsLimit,
+          revisionsLimit: PLANS.free.revisionsLimit,
           revisionsUsed: 0,
-          deepAnalysis: PLANS.bootstrapper.deepAnalysis,
-          chatWithReport: PLANS.bootstrapper.chatWithReport,
+          deepAnalysis: PLANS.free.deepAnalysis,
+          chatWithReport: PLANS.free.chatWithReport,
           billingStatus: "active",
           nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
         };
@@ -43,13 +43,13 @@ export const subscriptionService = {
       if (!subRow) {
         // If not found, create and insert
         const defaultSub: Subscription = {
-          planId: "bootstrapper",
-          reviewsLimit: PLANS.bootstrapper.reviewsLimit,
+          planId: "free",
+          reviewsLimit: PLANS.free.reviewsLimit,
           reviewsUsed: 0,
-          revisionsLimit: PLANS.bootstrapper.revisionsLimit,
+          revisionsLimit: PLANS.free.revisionsLimit,
           revisionsUsed: 0,
-          deepAnalysis: PLANS.bootstrapper.deepAnalysis,
-          chatWithReport: PLANS.bootstrapper.chatWithReport,
+          deepAnalysis: PLANS.free.deepAnalysis,
+          chatWithReport: PLANS.free.chatWithReport,
           billingStatus: "active",
           nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
         };
@@ -58,12 +58,12 @@ export const subscriptionService = {
           .from("subscriptions")
           .insert({
             user_id: user.id,
-            plan_id: "bootstrapper",
+            plan_id: "free",
             status: "active",
             reviews_used: 0,
-            reviews_limit: PLANS.bootstrapper.reviewsLimit,
+            reviews_limit: PLANS.free.reviewsLimit,
             revisions_used: 0,
-            revisions_limit: PLANS.bootstrapper.revisionsLimit,
+            revisions_limit: PLANS.free.revisionsLimit,
             current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
           })
           .select()
@@ -89,7 +89,7 @@ export const subscriptionService = {
 
   async getPlans(): Promise<ServiceResult<Plan[]>> {
     try {
-      const plansList = Object.values(PLANS);
+      const plansList = Object.values(PLANS).filter((p) => p.id !== "free");
       return { success: true, data: plansList };
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Failed to retrieve plans.";
@@ -306,7 +306,7 @@ export const subscriptionService = {
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 function mapSubscriptionRow(row: any): Subscription {
-  const plan = PLANS[row.plan_id as PlanId] || PLANS.bootstrapper;
+  const plan = PLANS[row.plan_id as PlanId] || PLANS.free;
   return {
     planId: row.plan_id as PlanId,
     reviewsLimit: row.reviews_limit,

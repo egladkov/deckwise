@@ -9,6 +9,20 @@ export const STORAGE_KEYS = {
 };
 
 export const PLANS: Record<PlanId, Plan> = {
+  free: {
+    id: "free",
+    name: "Free",
+    description: "Basic access for exploring the platform",
+    priceMonth: 0,
+    reviewsLimit: 0,
+    revisionsLimit: 0,
+    deepAnalysis: false,
+    chatWithReport: false,
+    features: [
+      "View demo reviews",
+      "Upgrade anytime",
+    ],
+  },
   bootstrapper: {
     id: "bootstrapper",
     name: "Bootstrapper",
