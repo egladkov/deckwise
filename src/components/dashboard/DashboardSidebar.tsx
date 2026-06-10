@@ -27,7 +27,7 @@ export const DashboardSidebar: React.FC = () => {
 
   const handleLogout = async () => {
     await logout();
-    router.push("/");
+    window.location.replace("/");
   };
 
   const navItems = [

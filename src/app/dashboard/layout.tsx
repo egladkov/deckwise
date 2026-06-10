@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../../stores/auth.store";
 import { useUIStore } from "../../stores/ui.store";
@@ -11,9 +11,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const { session, loading, restoreSession, isAuthenticated } = useAuthStore();
   const { sidebarOpen, setSidebarOpen } = useUIStore();
+  const [sessionChecked, setSessionChecked] = useState(false);
 
   useEffect(() => {
-    restoreSession();
+    const initSession = async () => {
+      await restoreSession();
+      setSessionChecked(true);
+    };
+    initSession();
   }, [restoreSession]);
 
   // Close sidebar by default on small screens on initial render
@@ -26,12 +31,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [setSidebarOpen]);
 
   useEffect(() => {
-    if (!loading && !session && !isAuthenticated) {
-      router.push("/");
+    if (sessionChecked && !loading && !session && !isAuthenticated) {
+      window.location.replace("/");
     }
-  }, [session, loading, isAuthenticated, router]);
+  }, [sessionChecked, loading, session, isAuthenticated]);
 
-  if (loading) {
+  if (loading || !sessionChecked) {
     return (
       <div className="min-h-screen bg-ruled bg-paper flex flex-col items-center justify-center font-sans">
         <div className="w-10 h-10 rounded-xl bg-navy border border-gold/30 flex items-center justify-center animate-spin text-gold font-bold text-lg">

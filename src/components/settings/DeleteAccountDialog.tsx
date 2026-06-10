@@ -19,7 +19,7 @@ export const DeleteAccountDialog: React.FC = () => {
     setIsOpen(false);
     const success = await deleteAccount();
     if (success) {
-      router.push("/");
+      window.location.replace("/");
     }
   };
 
