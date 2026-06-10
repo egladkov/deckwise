@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Deckwise представляет собой MVP-панель (прототип) для проведения ИИ-анализа презентаций (pitch decks) и получения структурированного инвесторского фидбека. Проект разработан на базе Next.js с интеграцией Supabase для авторизации и хранения данных, а также OpenAI API для анализа презентаций.
 
-## Getting Started
+## Используемый стек технологий
+- **Фреймворк:** [Next.js 16](https://nextjs.org/) (App Router)
+- **Библиотека интерфейса:** [React 19](https://react.dev/)
+- **Стилизация:** [Tailwind CSS v4](https://tailwindcss.com/) & [shadcn/ui](https://ui.shadcn.com/)
+- **Управление состоянием:** [Zustand](https://zustand-demo.pmnd.rs/)
+- **База данных и авторизация:** [Supabase Auth & Supabase Postgres DB](https://supabase.com/)
+- **Интеграция ИИ:** [OpenAI API](https://openai.com/)
+- **Локальное хранилище / кэш:** [Dexie.js](https://dexie.org/)
+- **Язык программирования:** [TypeScript](https://www.typescriptlang.org/)
 
-First, run the development server:
+---
 
+## Требования для запуска
+Для успешного запуска приложения вам понадобятся:
+- **Node.js** версии `18.x` или выше.
+- Менеджер пакетов **npm** (поставляется вместе с Node.js), либо **yarn** / **pnpm** / **bun**.
+- Настроенный инстанс **Supabase** (база данных и авторизация).
+
+---
+
+## Локальное развертывание и запуск
+Следуйте этим шагам, чтобы развернуть приложение на локальной машине:
+
+### 1. Клонирование репозитория
+Склонируйте проект и перейдите в его директорию:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <ссылка-на-репозиторий>
+cd deckwise
+```
+*(Или просто откройте папку проекта в вашей среде разработки)*
+
+### 2. Установка зависимостей
+Установите все необходимые Node.js модули:
+```bash
+npm install
+# или
+yarn install
+# или
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Настройка переменных окружения
+Создайте файл `.env.local` в корневой директории проекта. Вы можете скопировать настройки из `.env.example`:
+```bash
+cp .env.example .env.local
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Внутри файла `.env.local` настройте следующие переменные:
+- `NEXT_PUBLIC_SUPABASE_URL` — URL вашего проекта Supabase.
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Анонимный публичный ключ Supabase.
+- `SUPABASE_SERVICE_ROLE_KEY` — Сервисный роль-ключ Supabase (используется на стороне сервера для административных задач, таких как удаление аккаунтов).
+- `OPENAI_API_KEY` — Ваш API-ключ OpenAI для выполнения реальных запросов к ИИ.
+- `OPENAI_REVIEW_MODEL` — Имя используемой ИИ-модели для анализа презентаций (например, `gpt-5.4-mini`).
+- `OPENAI_CHAT_MODEL` — Имя ИИ-модели для интерактивного чата по презентации (например, `gpt-5.4-nano`).
+- `OPENAI_FAST_MODEL` — Имя ИИ-модели для быстрых ответов (например, `gpt-5.4-mini`).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Инициализация базы данных (Supabase)
+Для развертывания структуры базы данных и политик безопасности примените SQL-миграции из каталога `supabase/migrations/` на вашем инстансе Supabase (через Supabase CLI или SQL Editor в панели Supabase):
+- [20260609000000_init_supabase.sql](file:///d:/projects/deckwise/supabase/migrations/20260609000000_init_supabase.sql) — Создание таблиц, индексов, триггеров и включение Row Level Security (RLS).
+- [20260609000001_update_pricing_tiers.sql](file:///d:/projects/deckwise/supabase/migrations/20260609000001_update_pricing_tiers.sql) — Конфигурация тарифных планов и лимитов для подписок.
 
-## Learn More
+> [!NOTE]
+> Не забудьте отключить подтверждение регистрации по почте в панели управления Supabase (`Authentication → Providers → Email → Confirm email = disabled`) для мгновенного входа пользователей после регистрации в MVP.
 
-To learn more about Next.js, take a look at the following resources:
+### 5. Запуск сервера разработки
+Запустите локальный сервер разработки:
+```bash
+npm run dev
+# или
+yarn dev
+# или
+pnpm dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+После этого приложение будет доступно по адресу: [http://localhost:3000](http://localhost:3000).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Сборка и запуск в production-режиме
+Для проверки оптимизированной сборки проекта или запуска в продакшене выполните следующие команды:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Сборка проекта:**
+   ```bash
+   npm run build
+   ```
+2. **Запуск собранного приложения:**
+   ```bash
+   npm run start
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Доступные скрипты в проекте
+В файле [package.json](file:///d:/projects/deckwise/package.json) настроены следующие скрипты:
+
+- `npm run dev` — Запуск приложения в режиме разработки с возможностью авто-перезагрузки (HMR).
+- `npm run build` — Компиляция и сборка приложения под production.
+- `npm run start` — Запуск сервера скомпилированного production-билда.
+- `npm run lint` — Запуск линтера ESLint для проверки качества и стиля кода.
+
+---
+
+## Архитектурные правила проекта
+Разработка ведётся строго по правилам, описанным в [AGENTS.md](file:///d:/projects/deckwise/AGENTS.md):
+- **Разделение слоев:** Бизнес-логика полностью вынесена из UI-компонентов. Доступ к данным и выполнение запросов к Supabase производятся через слой сервисов (`src/services/*`), а управление глобальным состоянием интерфейса — в Zustand-сторах (`src/stores/*`). UI-компоненты остаются чистыми и презентационными.
+- **Supabase как Источник Правды (Source of Truth):** База данных Supabase с активированными политиками Row Level Security (RLS) является единственным источником правды для профилей, подписок, истории анализов и сообщений чата. Локальное хранилище (`localStorage`, `IndexedDB` через `Dexie.js`) используется исключительно как кэш UI.
+- **Безопасность (Security):** Секретные ключи `SUPABASE_SERVICE_ROLE_KEY` и `OPENAI_API_KEY` используются строго на сервере. Удаление аккаунта пользователя с каскадным удалением его данных в БД выполняется через защищенный API-маршрут `/api/account/delete`.
+- **ИИ-анализ:** Интеграция с OpenAI API осуществляется исключительно через Next.js API-маршруты `/api/ai/review` и `/api/ai/chat`. ИИ возвращает структурированный JSON, который перед сохранением валидируется схемой Zod.
